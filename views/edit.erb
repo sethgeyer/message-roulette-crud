@@ -1,0 +1,9 @@
+Edit Message
+
+<form method="POST" action="/messages/<%=message_to_edit['id']%>">
+  <input type="hidden" name="_method" value="PATCH">
+  <label for="message">Message:</label><br/>
+  <textarea type="text" col="40" row="5"  id="message"  name="message" ><%=message_to_edit["message"]%></textarea><br>
+  <button>Submit</button>
+</form>
+

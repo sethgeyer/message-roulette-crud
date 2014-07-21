@@ -28,4 +28,15 @@ class App < Sinatra::Application
     redirect "/"
   end
 
+  get "/messages/:id/edit" do
+    id = params[:id].to_i
+    message_to_edit = @database_connection.sql("SELECT * from messages WHERE id=#{id}").first
+    erb :edit, locals: {message_to_edit: message_to_edit}
+  end
+
+  patch "/messages/:id" do
+    @database_connection.sql("UPDATE messages SET message='#{params[:message]}' WHERE id=#{params[:id].to_i}")
+    redirect "/"
+  end
+
 end
