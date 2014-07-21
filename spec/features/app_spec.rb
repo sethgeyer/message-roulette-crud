@@ -46,5 +46,14 @@ feature "Messages" do
   end
 
 
+  scenario "As a user, I can delete a message" do
+    visit "/"
+    fill_in "Message", :with => "Hello Everyone!"
+    click_button "Submit"
+    click_on "Delete"
+    expect(page).not_to have_content("Hello Everyone")
+  end
+
+
 
 end

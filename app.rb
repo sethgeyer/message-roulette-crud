@@ -45,4 +45,10 @@ class App < Sinatra::Application
     end
   end
 
+  delete "/messages/:id" do
+    id = params[:id].to_i
+    @database_connection.sql("DELETE FROM messages WHERE id=#{id}").first
+    redirect "/"
+  end
+
 end
