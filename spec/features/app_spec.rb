@@ -54,6 +54,23 @@ feature "Messages" do
     expect(page).not_to have_content("Hello Everyone")
   end
 
+  scenario "As a user, I can add a comment" do
+    visit "/"
+    fill_in "Message", :with => "Hello Everyone!"
+    click_button "Submit"
+    click_on "Comment"
+    expect(page).to have_content("Add a Comment")
+    fill_in "Comment", with: "Good idea!"
+    click_on "Add Comment"
+    expect(page).to have_content("Good idea")
+  end
+
+
+  # As a user
+  # When I click "Comment" next to a message
+  # And I fill in "Comment" with "Good idea!"
+  # And I click Add Comment
+  # Then I should see my comment below the message I commented on
 
 
 end
