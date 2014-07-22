@@ -7,7 +7,7 @@
 <% messages.each do |message_hash| %>
 
   <li>
-    <%= message_hash["message"] %>
+    <a href= /messages/<%=message_hash["id"]%>><%= message_hash["message"] %></a>
     <form method="POST" action="/messages/<%=message_hash["id"]%>">
       <input type="hidden" name="_method" value="DELETE">
       <button>Delete</button>

@@ -65,12 +65,30 @@ feature "Messages" do
     expect(page).to have_content("Good idea")
   end
 
+  scenario "As a user, I can see/goto the individual message page" do
+    visit "/"
+    fill_in "Message", :with => "Hello Everyone!"
+    click_button "Submit"
+    click_on "Comment"
+    expect(page).to have_content("Add a Comment")
+    fill_in "Comment", with: "Good idea!"
+    click_on "Add Comment"
+    click_on "Hello Everyone!"
+    expect(page).to have_content("Show Page")
+    expect(page).to have_content("Good idea!")
+    expect(page).not_to have_content("Edit Message")
+  end
 
+  # As a user,
+  # I can click on a message and
+  # go to a page with only that message
+  # and its comments
+  #
   # As a user
-  # When I click "Comment" next to a message
-  # And I fill in "Comment" with "Good idea!"
-  # And I click Add Comment
-  # Then I should see my comment below the message I commented on
+  # When I visit the home page
+  # And I click on a message
+  # Then I should be on the message page
+  # And I should only see comments for that message
 
 
 end
