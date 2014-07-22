@@ -2,6 +2,8 @@ require "sinatra"
 require "active_record"
 require "gschool_database_connection"
 require "rack-flash"
+require "./lib/messages"
+require "./lib/comments"
 
 class App < Sinatra::Application
   enable :sessions
@@ -9,20 +11,22 @@ class App < Sinatra::Application
 
   def initialize
     super
+    @messages = Messages.new(GschoolDatabaseConnection::DatabaseConnection.establish(ENV["RACK_ENV"]))
+    @comments = Comments.new(GschoolDatabaseConnection::DatabaseConnection.establish(ENV["RACK_ENV"]))
+
     @database_connection = GschoolDatabaseConnection::DatabaseConnection.establish(ENV["RACK_ENV"])
   end
 
   get "/" do
-    messages = @database_connection.sql("SELECT * FROM messages")
-    comments = @database_connection.sql("SELECT * FROM comments")
-
+    messages = @messages.show_all
+    comments = @comments.show_all
     erb :home, locals: {messages: messages, comments: comments}
   end
 
   post "/messages" do
     message = params[:message]
     if message.length <= 140
-      @database_connection.sql("INSERT INTO messages (message) VALUES ('#{message}')")
+      @messages.create_message(message)
     else
       flash[:error] = "Message must be less than 140 characters."
     end
@@ -31,14 +35,14 @@ class App < Sinatra::Application
 
   get "/messages/:id/edit" do
     id = params[:id].to_i
-    message_to_edit = @database_connection.sql("SELECT * from messages WHERE id=#{id}").first
+    message_to_edit = @messages.find_by_id(id)
     erb :edit, locals: {message_to_edit: message_to_edit}
   end
 
   patch "/messages/:id" do
     message_to_edit = params[:message]
     if message_to_edit.length <= 140
-      @database_connection.sql("UPDATE messages SET message='#{message_to_edit}' WHERE id=#{params[:id].to_i}")
+      @messages.update_message(message_to_edit, params[:id].to_i)
       redirect "/"
     else
       flash[:error] = "Message must be less than 140 characters."
@@ -48,19 +52,17 @@ class App < Sinatra::Application
 
   delete "/messages/:id" do
     id = params[:id].to_i
-    @database_connection.sql("DELETE FROM messages WHERE id=#{id}").first
+    @messages.delete_by_id(id)
     redirect "/"
   end
 
   #SHOW
   get "/messages/:id" do
     id = params[:id].to_i
-    message = @database_connection.sql("SELECT * FROM messages WHERE id=#{id}").first
-    comments = @database_connection.sql("SELECT * FROM comments WHERE message_id=#{id}")
+    message = @messages.find_by_id(id)
+    comments = @comments.find_by_message_id(id)
     erb :show, locals: {message: message, comments: comments}
   end
-
-
 
   #NEW COMMENT
   get "/comments/new/:id" do
@@ -70,7 +72,7 @@ class App < Sinatra::Application
 
   post "/comments" do
     begin
-      @database_connection.sql("INSERT INTO comments (message_id, comment) VALUES (#{params[:message_id].to_i}, '#{params[:comment]}')")
+      @comments.create_comment(params[:message_id].to_i, params[:comment])
       redirect "/"
     rescue
       erb :new_comment, locals: {message_id: params[:message_id]}
