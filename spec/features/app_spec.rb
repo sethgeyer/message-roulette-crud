@@ -70,14 +70,14 @@ feature "Messages" do
     expect(page).to have_content("2 Likes")
   end
 
-  scenario "As a user, I can dilike a message" do
+  scenario "As a user, I can dislike a message" do
     create_a_valid_message("Hello Everyone!")
     expect(page).to have_content("0 Likes")
     expect(page).to have_button("Like")
     click_on "Like"
     expect(page).to have_content("1 Like")
-    click_on "Like"
-    expect(page).to have_content("2 Likes")
+    click_on "Dislike"
+    expect(page).to have_content("0 Likes")
   end
 
 

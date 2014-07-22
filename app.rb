@@ -40,7 +40,7 @@ class App < Sinatra::Application
   end
 
   patch "/messages/:id" do
-    if !params[:like]
+    if params[:update]
       message_to_edit = params[:message]
       if message_to_edit.length <= 140
         @messages.update_message(message_to_edit, params[:id].to_i)
@@ -49,9 +49,12 @@ class App < Sinatra::Application
         flash[:error] = "Message must be less than 140 characters."
         erb :edit, locals: {message_to_edit: message_to_edit}
       end
-    else
-      @messages.increment_like_count(1, params[:like_count].to_i, params[:id].to_i)
+    elsif params[:like_ness]
+      count_direction = params[:like_ness].to_i
+      @messages.increment_like_count(count_direction, params[:like_count].to_i, params[:id].to_i)
       redirect "/"
+    else-
+      "BOOM"
     end
   end
 

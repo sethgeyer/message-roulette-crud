@@ -19,7 +19,13 @@
     <form method="POST" action="/messages/<%=message_hash["id"]%>">
       <input type="hidden" name="_method" value="PATCH">
       <input type="hidden" name="like_count" value="<%=message_hash["like_count"]%>">
-      <button name="like" value="like">Like</button>
+      <button name="like_ness" value="1">Like</button>
+    </form>
+
+    <form method="POST" action="/messages/<%=message_hash["id"]%>">
+      <input type="hidden" name="_method" value="PATCH">
+      <input type="hidden" name="like_count" value="<%=message_hash["like_count"]%>">
+      <button name="like_ness" value="-1">Dislike</button>
     </form>
 
     <form method="POST" action="/messages/<%=message_hash["id"]%>">
