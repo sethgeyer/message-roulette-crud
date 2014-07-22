@@ -42,6 +42,15 @@ describe Comments do
     end
   end
 
+  describe "#increment_like_count" do
+    it "should update the dbase record of the message by 1 like" do
+      database_connection.sql("INSERT INTO messages (like_count, id) VALUES (0, 22)")
+      messages.increment_like_count(1, 5, 22)
+      expect(database_connection.sql("SELECT * FROM messages").first["like_count"].to_i).to eq(6)
+    end
+  end
+
+
 
 
 

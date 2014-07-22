@@ -8,6 +8,20 @@
 
   <li>
     <a href= /messages/<%=message_hash["id"]%>><%= message_hash["message"] %></a>
+
+    <% if message_hash["like_count"].to_i != 1%>
+      <%like_grammar = "Likes"%>
+    <%else%>
+      <%like_grammar = "Like"%>
+    <%end%>
+    <%=message_hash["like_count"]%> <%=like_grammar%>
+
+    <form method="POST" action="/messages/<%=message_hash["id"]%>">
+      <input type="hidden" name="_method" value="PATCH">
+      <input type="hidden" name="like_count" value="<%=message_hash["like_count"]%>">
+      <button name="like" value="like">Like</button>
+    </form>
+
     <form method="POST" action="/messages/<%=message_hash["id"]%>">
       <input type="hidden" name="_method" value="DELETE">
       <button>Delete</button>
