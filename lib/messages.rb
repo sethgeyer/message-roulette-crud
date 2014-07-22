@@ -21,6 +21,7 @@ class Messages
 
   def delete_by_id(id)
     @database_connection.sql("DELETE FROM messages WHERE id=#{id}").first
+    @database_connection.sql("DELETE FROM comments WHERE message_id=#{id}").first
   end
 
   def increment_like_count(amount, current_like_count, id)
